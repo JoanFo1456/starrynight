@@ -1,19 +1,16 @@
 {
   "id": "starrynight",
   "name": "StarryNight",
-  "author": "JoanFo",
+  "author": "JoanFo & Hallo123wert",
   "version": "1.0.1",
   "description": "Who doesn't like the night, with flickering stars?",
   "category": "theme",
   "url": "https://github.com/JoanFo1456/starrynight",
-  "update_url": "",
+  "update_url": "https://hub.pelican.dev/plugins/starrynight/update.json",
   "namespace": "JoanFo\\StarryNight",
   "class": "StarryNightPlugin",
-  "panels": [
-    "admin",
-    "server",
-    "app"
-  ],
+  "panels": null,
   "panel_version": null,
+  "api_version": 1,
   "composer_packages": null
 }
