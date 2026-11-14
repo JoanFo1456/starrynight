@@ -2,49 +2,55 @@
 
 namespace JoanFo\StarryNight;
 
-use Filament\Contracts\Plugin;
+use App\Contracts\Plugins\HasTheme;
+use Closure;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\File;
 
-class StarryNightPlugin implements Plugin
+class StarryNightPlugin implements HasTheme
 {
     public function getId(): string
     {
         return 'starrynight';
     }
 
-    public function register(Panel $panel): void
+    public function register(Panel $panel): void {}
+
+    public function getThemeViteEntry(): string|array|null
     {
-        $pairs = [
-            [__DIR__.'/../../css/starry-night.css', public_path('plugins/starrynight/css/starry-night.css')],
-            [__DIR__.'/../../css/starry-night-light.css', public_path('plugins/starrynight/css/starry-night-light.css')],
-        ];
+        return null;
+    }
 
-        foreach ($pairs as [$source, $destination]) {
-            try {
-                if (!File::exists($destination) && File::exists($source)) {
-                    $dir = dirname($destination);
-                    if (!File::isDirectory($dir)) {
-                        File::makeDirectory($dir, 0755, true);
-                    }
-                    File::copy($source, $destination);
-                }
-            } catch (\Throwable $e) {
-
-            }
-        }
-
-        $panel->colors([
+    /**
+     * @return array<string, array<int|string, string|int>|string>
+     */
+    public function getThemeColors(): array
+    {
+        return [
             'danger' => Color::Rose,
             'gray' => Color::Slate,
             'info' => Color::Pink,
             'primary' => Color::Purple,
             'success' => Color::Emerald,
             'warning' => Color::Amber,
-        ]);
+        ];
+    }
 
-        $panel->renderHook('panels::head.end', function () {
+    public function getThemeFont(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @return array<string, Closure>
+     */
+    public function getThemeRenderHooks(): array
+    {
+        return [
+            'panels::head.end' => function () {
+                $this->publishAssets();
+
             $dark = asset('plugins/starrynight/css/starry-night.css');
             $light = asset('plugins/starrynight/css/starry-night-light.css');
 
@@ -142,9 +148,8 @@ class StarryNightPlugin implements Plugin
 })();
 </script>
 HTML;
-        });
-
-        $panel->renderHook('panels::body.start', function () {
+            },
+            'panels::body.start' => function () {
             $meteorHtml = '<section class="starrynight-meteors">
                 <span></span>
                 <span></span>
@@ -311,7 +316,30 @@ CSS;
 JS;
 
             return $meteorCss.$meteorHtml.$starDiv.$starStyle.$starJs;
-        });
+            },
+        ];
+    }
+
+    private function publishAssets(): void
+    {
+        $pairs = [
+            [__DIR__.'/../../css/starry-night.css', public_path('plugins/starrynight/css/starry-night.css')],
+            [__DIR__.'/../../css/starry-night-light.css', public_path('plugins/starrynight/css/starry-night-light.css')],
+        ];
+
+        foreach ($pairs as [$source, $destination]) {
+            try {
+                if (!File::exists($destination) && File::exists($source)) {
+                    $dir = dirname($destination);
+                    if (!File::isDirectory($dir)) {
+                        File::makeDirectory($dir, 0755, true);
+                    }
+                    File::copy($source, $destination);
+                }
+            } catch (\Throwable $e) {
+
+            }
+        }
     }
 
     public function boot(Panel $panel): void {}
