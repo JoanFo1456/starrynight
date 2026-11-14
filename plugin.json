@@ -7,6 +7,7 @@
   "category": "theme",
   "url": "https://github.com/JoanFo1456/starrynight",
   "update_url": "https://hub.pelican.dev/plugins/starrynight/update.json",
+  "api_version": 1,
   "namespace": "JoanFo\\StarryNight",
   "class": "StarryNightPlugin",
   "panels": [
